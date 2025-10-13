@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>THREE 商品系列分析系統</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <!-- 頭部 -->
+        <header class="header">
+            <h1>THREE 商品系列分析系統</h1>
+            <p class="subtitle">自動整合多通路銷售數據，生成標準化分析報表</p>
+        </header>
+
+        <!-- 主要內容 -->
+        <main class="main-content">
+            <!-- 上傳區域 -->
+            <div class="upload-section">
+                <h2>上傳銷售數據文件</h2>
+                
+                <form id="uploadForm" enctype="multipart/form-data">
+                    <div class="upload-grid">
+                        <!-- 官網數據 -->
+                        <div class="upload-card">
+                            <div class="upload-icon">📊</div>
+                            <h3>官網數據</h3>
+                            <p class="upload-desc">商品分析.xlsx</p>
+                            <input type="file" id="official" name="official" accept=".xlsx,.xls" required>
+                            <label for="official" class="file-label">
+                                <span class="file-text">選擇文件</span>
+                                <span class="file-name" id="official-name">未選擇文件</span>
+                            </label>
+                            <div class="upload-status" id="official-status"></div>
+                        </div>
+
+                        <!-- MOMO數據 -->
+                        <div class="upload-card">
+                            <div class="upload-icon">🛒</div>
+                            <h3>MOMO 數據</h3>
+                            <p class="upload-desc">S1201Report.xls(x)</p>
+                            <input type="file" id="momo" name="momo" accept=".xlsx,.xls" required>
+                            <label for="momo" class="file-label">
+                                <span class="file-text">選擇文件</span>
+                                <span class="file-name" id="momo-name">未選擇文件</span>
+                            </label>
+                            <div class="upload-status" id="momo-status"></div>
+                        </div>
+
+                        <!-- 美麗台數據 -->
+                        <div class="upload-card">
+                            <div class="upload-icon">🏬</div>
+                            <h3>美麗台數據</h3>
+                            <p class="upload-desc">採購單.pdf</p>
+                            <input type="file" id="pdf" name="pdf" accept=".pdf" required>
+                            <label for="pdf" class="file-label">
+                                <span class="file-text">選擇文件</span>
+                                <span class="file-name" id="pdf-name">未選擇文件</span>
+                            </label>
+                            <div class="upload-status" id="pdf-status"></div>
+                        </div>
+
+                        <!-- 分類定義 -->
+                        <div class="upload-card">
+                            <div class="upload-icon">📋</div>
+                            <h3>分類定義</h3>
+                            <p class="upload-desc">分類定義.xlsx</p>
+                            <input type="file" id="category" name="category" accept=".xlsx" required>
+                            <label for="category" class="file-label">
+                                <span class="file-text">選擇文件</span>
+                                <span class="file-name" id="category-name">未選擇文件</span>
+                            </label>
+                            <div class="upload-status" id="category-status"></div>
+                        </div>
+                    </div>
+
+                    <!-- 執行按鈕 -->
+                    <div class="action-section">
+                        <button type="submit" class="btn-primary" id="analyzeBtn">
+                            <span class="btn-icon">🚀</span>
+                            執行分析
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 進度區域 -->
+            <div class="progress-section" id="progressSection" style="display: none;">
+                <h2>處理進度</h2>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progressBar"></div>
+                </div>
+                <p class="progress-text" id="progressText">準備中...</p>
+            </div>
+
+            <!-- 結果區域 -->
+            <div class="result-section" id="resultSection" style="display: none;">
+                <h2>分析結果</h2>
+                
+                <!-- 摘要 -->
+                <div class="summary-card">
+                    <h3>業績總覽</h3>
+                    <div class="summary-total">
+                        <span class="summary-label">總銷售額</span>
+                        <span class="summary-value" id="totalAmount">-</span>
+                    </div>
+                    <div class="summary-grid" id="summaryGrid">
+                        <!-- 動態生成 -->
+                    </div>
+                </div>
+
+                <!-- 未分類產品 -->
+                <div class="unclassified-card" id="unclassifiedCard" style="display: none;">
+                    <h3>⚠️ 未分類產品</h3>
+                    <p class="unclassified-desc">以下產品無法自動分類，建議更新分類定義文件</p>
+                    <ul class="unclassified-list" id="unclassifiedList">
+                        <!-- 動態生成 -->
+                    </ul>
+                </div>
+
+                <!-- 下載按鈕 -->
+                <div class="download-section">
+                    <button class="btn-download" id="downloadBtn">
+                        <span class="btn-icon">📥</span>
+                        下載 Excel 報表
+                    </button>
+                </div>
+            </div>
+
+            <!-- 錯誤提示 -->
+            <div class="error-section" id="errorSection" style="display: none;">
+                <h2>❌ 處理失敗</h2>
+                <p class="error-message" id="errorMessage"></p>
+                <button class="btn-secondary" onclick="location.reload()">重新開始</button>
+            </div>
+        </main>
+
+        <!-- 頁腳 -->
+        <footer class="footer">
+            <p>© 2025 THREE 商品系列分析系統 | 由 Manus AI 提供技術支持</p>
+        </footer>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+
