@@ -1,0 +1,8 @@
+## Cursor Cloud specific instructions
+
+This repository is a single Flask app in `three_sales_web/` (THREE 商品系列分析). There is no database, queue, or secret. Standard install and run commands are in `three_sales_web/README.md` and `three_sales_web/快速開始指南.md`. There is no linter, test suite, or CI config; `python3 -m py_compile app.py analyzer.py` (run from `three_sales_web/`) is the syntax check.
+
+- Run the dev server from `three_sales_web/` with `python3 app.py`. It creates `uploads/` and `output/`, binds `0.0.0.0`, and reads `PORT` (default 5000). `flask run` does not create those directories, so report generation fails with "Cannot save file into a non-existent directory". The `flask` script from `pip install --user` lands in `~/.local/bin`, which may be off `PATH`; `python3 app.py` does not need it. Python 3.12 can install the pinned `requirements.txt` wheels.
+- Core check: open `http://127.0.0.1:5000`, or `GET /health` (`{"status":"ok"}`). Analysis is `POST /upload` with multipart fields `official`, `momo`, `pdf`, and `category`, then `GET /download/<output_file>`. The bundled category workbook is `three_sales_web/分類定義.xlsx` (columns `保養系列`, `底彩妝`, `身體髮沐品`, `香氛`).
+- `load_pdf_data` ignores the PDF bytes and uses a hardcoded 美麗台 product list; the upload is still required and must use an allowed extension (`.pdf`). Official Excel is read with `skiprows=2` (three leading columns become name / qty / amount). MOMO Excel is read with `skiprows=3` and must contain columns `商品名稱`, `訂購數`, `訂購金額`.
+- `werkzeug.utils.secure_filename` strips non-ASCII, so a Chinese upload name such as `分類定義.xlsx` is stored as `xlsx`. Analysis still reads the saved bytes. Do not commit `uploads/` or `output/`.
